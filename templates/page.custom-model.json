@@ -1,0 +1,245 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {}
+    },
+    "rich_text_A6jy8Q": {
+      "type": "rich-text",
+      "name": "Rich text",
+      "settings": {
+        "animation": "",
+        "setwidth": "container",
+        "bgsection": "#ffffff",
+        "gradient_bg": "",
+        "title_color": "rgba(0,0,0,0)",
+        "title_top": "",
+        "title": "Customize your own model",
+        "text": "<p><strong>We make custom-branded models with bespoke hardware </strong>to showcase your medical device or product with the anatomical accuracy and tactile feedback that healthcare professionals demand</p>",
+        "align-heading": "center",
+        "paddingsection": "40px 0px 40px 0px",
+        "paddingmobile": "40px 0px 40px 0px",
+        "marginsection": "0px 0px 0px 0px",
+        "marginmobile": "0px 0px 0px 0px"
+      }
+    },
+    "17700950894be1f139": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_73f637a_LfFmmX": {
+          "type": "ai_gen_block_73f637a",
+          "settings": {
+            "desktop_width_percent": 75,
+            "columns_desktop": 3,
+            "columns_mobile": "2",
+            "grid_gap": 16,
+            "image_border_radius": 8,
+            "caption_bg_color": "#212b36",
+            "caption_text_color": "#ffffff",
+            "enable_image_1": true,
+            "image_1": "shopify://shop_images/DSC_9913lumbar.jpg",
+            "caption_1": "Lumbar Spine Fixation Model",
+            "enable_image_2": true,
+            "image_2": "shopify://shop_images/DSC_0009cervical.jpg",
+            "caption_2": "Pedicle Screw & Rod System",
+            "enable_image_3": true,
+            "image_3": "shopify://shop_images/DSC_9951.jpg",
+            "caption_3": "Intervertebral Disc with Surgical Demonstration",
+            "enable_image_4": true,
+            "image_4": "shopify://shop_images/DSC_0008cervical.jpg",
+            "caption_4": "Vertebral Alignment with Fixation Screws",
+            "enable_image_5": true,
+            "image_5": "shopify://shop_images/DSC_9924.jpg",
+            "caption_5": "Individual Cervical Vertebrae Components",
+            "enable_image_6": true,
+            "image_6": "shopify://shop_images/DSC_9955anterior_645a379c-eac5-41b5-842e-c382eec5177a.jpg",
+            "caption_6": "Spine Anatomy with Surrounding Muscles",
+            "enable_image_7": false,
+            "caption_7": "",
+            "enable_image_8": false,
+            "caption_8": "",
+            "enable_image_9": false,
+            "caption_9": "",
+            "enable_image_10": false,
+            "caption_10": "",
+            "enable_image_11": false,
+            "caption_11": "",
+            "enable_image_12": false,
+            "caption_12": "",
+            "enable_image_13": false,
+            "caption_13": "",
+            "enable_image_14": false,
+            "caption_14": "",
+            "enable_image_15": false,
+            "caption_15": "",
+            "enable_image_16": false,
+            "caption_16": "",
+            "enable_image_17": false,
+            "caption_17": "",
+            "enable_image_18": false,
+            "caption_18": "",
+            "enable_image_19": false,
+            "caption_19": "",
+            "enable_image_20": false,
+            "caption_20": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_73f637a_LfFmmX"
+      ],
+      "settings": {}
+    },
+    "rules_AwngRT": {
+      "type": "rules",
+      "blocks": {
+        "milestone_pytCcC": {
+          "type": "milestone",
+          "settings": {
+            "navigation_label": "Step 1",
+            "image": "shopify://shop_images/Gemini_Generated_Image_v0y78dv0y78dv0y7.png",
+            "heading": "Pick your Spine Region",
+            "description": "<h4>Cervical or lumbar are most popular, other vertebra are also possible</h4>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "milestone_79wkAf": {
+          "type": "milestone",
+          "settings": {
+            "navigation_label": "Step 2",
+            "image": "shopify://shop_images/Gemini_Generated_Image_ckbphjckbphjckbp.png",
+            "heading": "Pick Your implants",
+            "description": "<h4>Disc replacement, ACDF, pedicle screws, etc.</h4>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "milestone_paFCRN": {
+          "type": "milestone",
+          "settings": {
+            "navigation_label": "Step 3",
+            "image": "shopify://shop_images/Gemini_Generated_Image_sk2fsdsk2fsdsk2f-Photoroom.png",
+            "heading": "Pick Your resection",
+            "description": "<h4> We can replicate any osteotomy from our base models or design custom cuts.</h4>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "milestone_BpMNLH": {
+          "type": "milestone",
+          "settings": {
+            "navigation_label": "Step 4",
+            "image": "shopify://shop_images/Gemini_Generated_Image_oz5vnyoz5vnyoz5v-Photoroom.png",
+            "heading": "Choose Your Colors",
+            "description": "<h4>We can print any of the parts in almost any color, for brand specific colors we use best approximates.</h4>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "milestone_Ld6GDT": {
+          "type": "milestone",
+          "settings": {
+            "navigation_label": "Step 5",
+            "image": "shopify://shop_images/9f578c_195fe70b9ae5449288e9497f4e2689b7f002_upscayl_4x_upscayl-standard-4x.png",
+            "heading": "Add names, logo, other design",
+            "description": "<h4>Send us your logo and we can mock up how it will look prior to production</h4>",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "milestone_kW8nX7": {
+          "type": "milestone",
+          "settings": {
+            "navigation_label": "Step 6",
+            "image": "shopify://shop_images/20260119_1507_Image_Generation_remix_01kfb99s3petab3gtagexr8r29_upscayl_4x_upscayl-standard-4x.png",
+            "heading": "Price",
+            "description": "<h4>Cost is dependent on the degree of customization. One off models typically range from $300-$1000. Significant discounts apply with larger orders.</h4>",
+            "button_label": "",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "milestone_pytCcC",
+        "milestone_79wkAf",
+        "milestone_paFCRN",
+        "milestone_BpMNLH",
+        "milestone_Ld6GDT",
+        "milestone_kW8nX7"
+      ],
+      "custom_css": [
+        ".timeline-grid-template--16985257803873__rules_AwngRT {max-width: 1000px;}",
+        ".timeline-header-template--16985257803873__rules_AwngRT > h2 {font-weight: 800 !important; letter-spacing: normal;}",
+        ".timeline-text-col > h3 {letter-spacing: normal !important;}"
+      ],
+      "name": "Unique Timeline",
+      "settings": {
+        "heading": "How to design your own model",
+        "subheading": "",
+        "heading_size": 100,
+        "heading_alignment": "center",
+        "media_ratio": "1/1",
+        "media_position": "right",
+        "background_color": "#01bad4",
+        "text_color": "#333333",
+        "heading_color": "#000000",
+        "line_and_border_color": "#e2e2e2",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "professional_form_NtRKwA": {
+      "type": "Professional-form",
+      "blocks": {
+        "contact_details_aBpRcU": {
+          "type": "contact_details",
+          "settings": {
+            "title": "Contact Details",
+            "icon_1": "📞",
+            "label_1": "Call us",
+            "text_1": "2028266628",
+            "icon_2": "✉️",
+            "label_2": "Email",
+            "text_2": "support@demospine.com"
+          }
+        }
+      },
+      "block_order": [
+        "contact_details_aBpRcU"
+      ],
+      "custom_css": [],
+      "name": "Professional Clinic Form",
+      "settings": {
+        "main_heading": "Contact Us",
+        "main_subheading": "Tell us what you're looking for.",
+        "accent_color": "#2359be",
+        "bg_gradient_top": "#f4f7ff",
+        "bg_gradient_bottom": "#ffffff",
+        "form_title": "Queries",
+        "badge_text": "",
+        "button_text": "Request a Call Back",
+        "padding_top": 100,
+        "padding_bottom": 100
+      }
+    }
+  },
+  "order": [
+    "main",
+    "rich_text_A6jy8Q",
+    "17700950894be1f139",
+    "rules_AwngRT",
+    "professional_form_NtRKwA"
+  ]
+}

@@ -1,0 +1,1174 @@
+{% comment %} {%- liquid
+  assign section_id = section.id
+  assign media_ratio = section.settings.media_ratio
+-%}
+
+{% style %}
+  /* Section Scoping */
+  .timeline-unique-{{ section_id }} {
+    --bg-color: {{ section.settings.background_color | default: '#ffffff' }};
+    --text-color: {{ section.settings.text_color | default: '#333' }};
+    --heading-color: {{ section.settings.heading_color | default: '#000' }};
+    --accent-color: {{ section.settings.line_and_border_color | default: '#e2e2e2' }};
+    
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+  }
+
+  /* Layout */
+  .timeline-grid-{{ section_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .timeline-header-{{ section_id }} {
+    text-align: {{ section.settings.heading_alignment }};
+  }
+
+  .timeline-header-{{ section_id }} h2 {
+    color: var(--heading-color);
+    font-size: calc(2rem * {{ section.settings.heading_size | divided_by: 100.0 }});
+    margin-bottom: 10px;
+  }
+
+  /* Content Slider (Now Middle) */
+  .timeline-content-pane {
+    display: none;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  @media (min-width: 768px) {
+    .timeline-content-pane {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+    .media-right { order: 2; }
+  }
+
+  .timeline-content-pane.active {
+    display: grid;
+  }
+
+  .timeline-image-wrapper img, 
+  .timeline-image-wrapper svg {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    aspect-ratio: {{ media_ratio | replace: '/', ' / ' }};
+    object-fit: cover;
+  }
+
+  /* The Timeline Visual (Now Bottom) */
+  .timeline-nav-wrapper {
+    position: relative;
+    padding: 20px 0;
+    margin-top: 20px;
+  }
+
+  .timeline-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-color);
+    z-index: 1;
+  }
+
+  .timeline-dots {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .timeline-dot-item {
+    display: flex;
+    flex-direction: column-reverse; /* Labels go above dots */
+    align-items: center;
+    cursor: pointer;
+    flex: 1;
+  }
+
+  .dot-trigger {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bg-color);
+    border: 2px solid var(--accent-color);
+    transition: all 0.3s ease;
+    margin-top: 10px; /* Space between label and dot */
+  }
+
+  .dot-label {
+    font-weight: bold;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+  }
+
+  .timeline-dot-item.active .dot-trigger {
+    background: var(--heading-color);
+    border-color: var(--heading-color);
+    transform: scale(1.3);
+  }
+
+  .timeline-dot-item.active .dot-label {
+    color: var(--heading-color);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .btn-timeline {
+    display: inline-block;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 15px;
+    background: var(--heading-color);
+    color: var(--bg-color);
+    transition: opacity 0.3s ease;
+  }
+
+  .btn-timeline:hover {
+    opacity: 0.8;
+  }
+{% endstyle %}
+
+<div class="timeline-unique-{{ section_id }}">
+  <div class="timeline-grid-{{ section_id }}">
+    
+    <div class="timeline-header-{{ section_id }}">
+      {% if section.settings.subheading != blank %}
+        <p>{{ section.settings.subheading }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2>{{ section.settings.heading }}</h2>
+      {% endif %}
+    </div>
+
+    <div class="timeline-main-content">
+      {% for block in section.blocks %}
+        <div id="TimelinePane-{{ section_id }}-{{ forloop.index0 }}" 
+             class="timeline-content-pane {% if forloop.first %}active{% endif %}" 
+             {{ block.shopify_attributes }}>
+          
+          <div class="timeline-text-col {% if section.settings.media_position == 'left' %}media-right{% endif %}">
+            <h3 style="color: var(--heading-color);">{{ block.settings.heading }}</h3>
+            <div class="rte">{{ block.settings.description }}</div>
+            {% if block.settings.button_label != blank %}
+              <a href="{{ block.settings.button_link }}" class="btn-timeline">{{ block.settings.button_label }}</a>
+            {% endif %}
+          </div>
+
+          <div class="timeline-media-col">
+            <div class="timeline-image-wrapper">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy' }}
+              {% else %}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="timeline-nav-wrapper">
+      <div class="timeline-line"></div>
+      <div class="timeline-dots">
+        {% for block in section.blocks %}
+          <div class="timeline-dot-item {% if forloop.first %}active{% endif %}" 
+               onclick="switchTimelineBlock('{{ section_id }}', {{ forloop.index0 }})"
+               data-index="{{ forloop.index0 }}">
+            <div class="dot-trigger"></div>
+            <span class="dot-label">{{ block.settings.navigation_label }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function switchTimelineBlock(sectionId, index) {
+    const section = document.querySelector('.timeline-unique-' + sectionId);
+    
+    // Update active state on dots
+    section.querySelectorAll('.timeline-dot-item').forEach(dot => dot.classList.remove('active'));
+    section.querySelector(`[data-index="${index}"]`).classList.add('active');
+    
+    // Update active state on content panes
+    section.querySelectorAll('.timeline-content-pane').forEach(pane => pane.classList.remove('active'));
+    document.getElementById(`TimelinePane-${sectionId}-${index}`).classList.add('active');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Unique Timeline Bottom",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Journey"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 50,
+      "max": 150,
+      "step": 10,
+      "unit": "%",
+      "default": 100,
+      "label": "Heading Size"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "media_ratio",
+      "label": "Image Ratio",
+      "options": [
+        {"value": "1/1", "label": "Square"},
+        {"value": "16/9", "label": "Landscape"},
+        {"value": "4/3", "label": "Classic"}
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "Desktop Media Position",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "right"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "line_and_border_color",
+      "label": "Line Color",
+      "default": "#e2e2e2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "label": "Padding Top"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "label": "Padding Bottom"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "Milestone",
+      "settings": [
+        {
+          "type": "text",
+          "id": "navigation_label",
+          "label": "Timeline Label (e.g. 2024)",
+          "default": "2024"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Milestone Heading",
+          "default": "The Beginning"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Share your story here.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Unique Timeline Bottom",
+      "blocks": [
+        { "type": "milestone", "settings": {"navigation_label": "2023", "heading": "Our Roots"} },
+        { "type": "milestone", "settings": {"navigation_label": "2024", "heading": "The Beginning"} }
+      ]
+    }
+  ]
+}
+{% endschema %} {% endcomment %}
+{% comment %} {%- liquid
+  assign section_id = section.id
+  assign media_ratio = section.settings.media_ratio
+-%}
+
+{% style %}
+  /* Section Scoping */
+  .timeline-unique-{{ section_id }} {
+    --bg-color: {{ section.settings.background_color | default: '#ffffff' }};
+    --text-color: {{ section.settings.text_color | default: '#333' }};
+    --heading-color: {{ section.settings.heading_color | default: '#000' }};
+    --accent-color: {{ section.settings.line_and_border_color | default: '#e2e2e2' }};
+    
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+  }
+
+  /* Layout */
+  .timeline-grid-{{ section_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .timeline-header-{{ section_id }} {
+    text-align: {{ section.settings.heading_alignment }};
+  }
+
+  /* FORCE NORMAL TEXT CASING (Overrides Theme Uppercase) */
+  .timeline-unique-{{ section_id }} h2,
+  .timeline-unique-{{ section_id }} h3,
+  .timeline-unique-{{ section_id }} p,
+  .timeline-unique-{{ section_id }} span,
+  .timeline-unique-{{ section_id }} a,
+  .timeline-unique-{{ section_id }} .rte,
+  .timeline-unique-{{ section_id }} .rte * {
+    text-transform: none !important;
+    letter-spacing: normal !important; /* Resets wide spacing often paired with uppercase */
+  }
+
+  .timeline-header-{{ section_id }} h2 {
+    color: var(--heading-color);
+    font-size: calc(2rem * {{ section.settings.heading_size | divided_by: 100.0 }});
+    margin-bottom: 10px;
+  }
+
+  /* Content Slider */
+  .timeline-content-pane {
+    display: none;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  @media (min-width: 768px) {
+    .timeline-content-pane {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+    .media-right { order: 2; }
+  }
+
+  .timeline-content-pane.active {
+    display: grid;
+  }
+
+  .timeline-image-wrapper img, 
+  .timeline-image-wrapper svg {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    aspect-ratio: {{ media_ratio | replace: '/', ' / ' }};
+    object-fit: cover;
+  }
+
+  /* The Timeline Visual (Bottom) */
+  .timeline-nav-wrapper {
+    position: relative;
+    padding: 20px 0;
+    margin-top: 20px;
+  }
+
+  .timeline-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-color);
+    z-index: 1;
+  }
+
+  .timeline-dots {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .timeline-dot-item {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    cursor: pointer;
+    flex: 1;
+  }
+
+  .dot-trigger {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--bg-color);
+    border: 2px solid var(--accent-color);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+  }
+
+  .dot-label {
+    font-weight: bold;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+    text-align: center;
+  }
+
+  .timeline-dot-item.active .dot-trigger {
+    background: var(--heading-color);
+    border-color: var(--heading-color);
+    transform: scale(1.3);
+  }
+
+  .timeline-dot-item.active .dot-label {
+    color: var(--heading-color);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .btn-timeline {
+    display: inline-block;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 15px;
+    background: var(--heading-color);
+    color: var(--bg-color);
+    transition: opacity 0.3s ease;
+  }
+
+  .btn-timeline:hover {
+    opacity: 0.8;
+  }
+{% endstyle %}
+
+<div class="timeline-unique-{{ section_id }}">
+  <div class="timeline-grid-{{ section_id }}">
+    
+    <div class="timeline-header-{{ section_id }}">
+      {% if section.settings.subheading != blank %}
+        <p>{{ section.settings.subheading }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2>{{ section.settings.heading }}</h2>
+      {% endif %}
+    </div>
+
+    <div class="timeline-main-content">
+      {% for block in section.blocks %}
+        <div id="TimelinePane-{{ section_id }}-{{ forloop.index0 }}" 
+             class="timeline-content-pane {% if forloop.first %}active{% endif %}" 
+             {{ block.shopify_attributes }}>
+          
+          <div class="timeline-text-col {% if section.settings.media_position == 'left' %}media-right{% endif %}">
+            <h3 style="color: var(--heading-color);">{{ block.settings.heading }}</h3>
+            <div class="rte">{{ block.settings.description }}</div>
+            {% if block.settings.button_label != blank %}
+              <a href="{{ block.settings.button_link }}" class="btn-timeline">{{ block.settings.button_label }}</a>
+            {% endif %}
+          </div>
+
+          <div class="timeline-media-col">
+            <div class="timeline-image-wrapper">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy' }}
+              {% else %}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="timeline-nav-wrapper">
+      <div class="timeline-line"></div>
+      <div class="timeline-dots">
+        {% for block in section.blocks %}
+          <div class="timeline-dot-item {% if forloop.first %}active{% endif %}" 
+               onclick="switchTimelineBlock('{{ section_id }}', {{ forloop.index0 }})"
+               data-index="{{ forloop.index0 }}">
+            <div class="dot-trigger"></div>
+            <span class="dot-label">{{ block.settings.navigation_label }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function switchTimelineBlock(sectionId, index) {
+    const section = document.querySelector('.timeline-unique-' + sectionId);
+    
+    section.querySelectorAll('.timeline-dot-item').forEach(dot => dot.classList.remove('active'));
+    section.querySelector(`[data-index="${index}"]`).classList.add('active');
+    
+    section.querySelectorAll('.timeline-content-pane').forEach(pane => pane.classList.remove('active'));
+    document.getElementById(`TimelinePane-${sectionId}-${index}`).classList.add('active');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Unique Timeline Bottom",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our journey"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 50,
+      "max": 150,
+      "step": 10,
+      "unit": "%",
+      "default": 100,
+      "label": "Heading Size"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "media_ratio",
+      "label": "Image Ratio",
+      "options": [
+        {"value": "1/1", "label": "Square"},
+        {"value": "16/9", "label": "Landscape"},
+        {"value": "4/3", "label": "Classic"}
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "Desktop Media Position",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "right"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "line_and_border_color",
+      "label": "Line Color",
+      "default": "#e2e2e2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "label": "Padding Top"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 40,
+      "label": "Padding Bottom"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "Milestone",
+      "settings": [
+        {
+          "type": "text",
+          "id": "navigation_label",
+          "label": "Timeline Label (e.g. 2024)",
+          "default": "2024"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Milestone Heading",
+          "default": "The beginning"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Cervical or lumbar are most popular, other vertebra are also possible</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Unique Timeline Bottom",
+      "blocks": [
+        { "type": "milestone", "settings": {"navigation_label": "2023", "heading": "Our roots"} },
+        { "type": "milestone", "settings": {"navigation_label": "2024", "heading": "The beginning"} }
+      ]
+    }
+  ]
+}
+{% endschema %} {% endcomment %}
+
+
+
+{%- liquid
+  assign section_id = section.id
+  assign media_ratio = section.settings.media_ratio
+-%}
+
+{% style %}
+  /* Section Scoping */
+  .timeline-unique-{{ section_id }} {
+    --bg-color: {{ section.settings.background_color | default: '#ffffff' }};
+    --text-color: {{ section.settings.text_color | default: '#333' }};
+    --heading-color: {{ section.settings.heading_color | default: '#000' }};
+    --accent-color: {{ section.settings.line_and_border_color | default: '#e2e2e2' }};
+    
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+  }
+
+  .timeline-grid-{{ section_id }} {
+    max-width: 1300px; /* Slightly wider to accommodate side arrows */
+    margin: 0 auto;
+    position: relative;
+    padding: 0 60px; /* Space for arrows */
+  }
+
+  .timeline-header-{{ section_id }} {
+    text-align: {{ section.settings.heading_alignment }};
+    margin-bottom: 40px;
+    padding: 0 20px;
+  }
+
+  /* Force Normal Text Casing */
+  .timeline-unique-{{ section_id }} h2,
+  .timeline-unique-{{ section_id }} h3,
+  .timeline-unique-{{ section_id }} p,
+  .timeline-unique-{{ section_id }} span,
+  .timeline-unique-{{ section_id }} a,
+  .timeline-unique-{{ section_id }} .rte,
+  .timeline-unique-{{ section_id }} .rte * {
+    text-transform: none !important;
+    letter-spacing: normal !important; 
+  }
+
+  .timeline-header-{{ section_id }} h2 {
+    color: var(--heading-color);
+    font-size: calc(2.4rem * {{ section.settings.heading_size | divided_by: 100.0 }});
+    margin: 0;
+  }
+
+  /* Slider Container */
+  .timeline-slider-viewport {
+    overflow: hidden;
+    position: relative;
+    border-radius: 12px;
+  }
+
+  .timeline-slider-track {
+    display: flex;
+    transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+    will-change: transform;
+  }
+
+  .timeline-content-pane {
+    flex: 0 0 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    box-sizing: border-box;
+    padding: 10px;
+  }
+
+  @media (min-width: 768px) {
+    .timeline-content-pane {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+    .media-right { order: 2; }
+  }
+
+  .timeline-image-wrapper img, 
+  .timeline-image-wrapper svg {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    aspect-ratio: {{ media_ratio | replace: '/', ' / ' }};
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+
+  /* Premium Side Arrows */
+  .slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: var(--bg-color);
+    border: 1px solid var(--accent-color);
+    color: var(--heading-color);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .slider-arrow:hover {
+    background: var(--heading-color);
+    color: var(--bg-color);
+    border-color: var(--heading-color);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+
+  .slider-arrow.prev-{{ section_id }} { left: 0; }
+  .slider-arrow.next-{{ section_id }} { right: 0; }
+
+  .slider-arrow:disabled {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* Content Styling */
+  .timeline-top-label {
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    margin-bottom: 12px;
+    color: var(--heading-color);
+    opacity: 0.7;
+  }
+
+  .timeline-text-col h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    line-height: 1.2;
+  }
+
+  .btn-timeline {
+    display: inline-block;
+    padding: 14px 32px;
+    text-decoration: none;
+    border-radius: 50px; /* Pill shape for premium look */
+    margin-top: 25px;
+    background: var(--heading-color);
+    color: var(--bg-color);
+    font-weight: 600;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .btn-timeline:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  @media (max-width: 767px) {
+    .timeline-grid-{{ section_id }} { padding: 0 45px; }
+    .slider-arrow { width: 40px; height: 40px; }
+  }
+{% endstyle %}
+
+<div class="timeline-unique-{{ section_id }}" id="Timeline-{{ section_id }}">
+  <div class="timeline-grid-{{ section_id }}">
+    
+    <div class="timeline-header-{{ section_id }}">
+      {% if section.settings.subheading != blank %}
+        <p>{{ section.settings.subheading }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2>{{ section.settings.heading }}</h2>
+      {% endif %}
+    </div>
+
+    <button class="slider-arrow prev-{{ section_id }}" aria-label="Previous slide">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+
+    <div class="timeline-slider-viewport">
+      <div class="timeline-slider-track">
+        {% for block in section.blocks %}
+          <div class="timeline-content-pane" {{ block.shopify_attributes }}>
+            <div class="timeline-text-col {% if section.settings.media_position == 'left' %}media-right{% endif %}">
+              {% if block.settings.navigation_label != blank %}
+                <span class="timeline-top-label">{{ block.settings.navigation_label }}</span>
+              {% endif %}
+              
+              <h3 style="color: var(--heading-color);">{{ block.settings.heading }}</h3>
+              <div class="rte">{{ block.settings.description }}</div>
+              
+              {% if block.settings.button_label != blank %}
+                <a href="{{ block.settings.button_link }}" class="btn-timeline">{{ block.settings.button_label }}</a>
+              {% endif %}
+            </div>
+
+            <div class="timeline-media-col">
+              <div class="timeline-image-wrapper">
+                {% if block.settings.image != blank %}
+                  {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+                {% else %}
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <button class="slider-arrow next-{{ section_id }}" aria-label="Next slide">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('#Timeline-{{ section_id }}');
+    const track = container.querySelector('.timeline-slider-track');
+    const slides = container.querySelectorAll('.timeline-content-pane');
+    const prevBtn = container.querySelector('.prev-{{ section_id }}');
+    const nextBtn = container.querySelector('.next-{{ section_id }}');
+    
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+
+    function updateSlider() {
+      track.style.transform = `translateX(-${currentIndex * 100}%)`;
+      
+      // Update visibility of arrows
+      if (currentIndex === 0) {
+        prevBtn.disabled = true;
+      } else {
+        prevBtn.disabled = false;
+      }
+
+      if (currentIndex === totalSlides - 1) {
+        nextBtn.disabled = true;
+      } else {
+        nextBtn.disabled = false;
+      }
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateSlider();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        updateSlider();
+      }
+    });
+
+    // Initialize
+    updateSlider();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Premium Timeline Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our journey"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 50,
+      "max": 150,
+      "step": 10,
+      "unit": "%",
+      "default": 100,
+      "label": "Heading Size"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "media_ratio",
+      "label": "Image Ratio",
+      "options": [
+        {"value": "1/1", "label": "Square"},
+        {"value": "16/9", "label": "Landscape"},
+        {"value": "4/3", "label": "Classic"}
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "Desktop Media Position",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "right"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "line_and_border_color",
+      "label": "Arrow Border Color",
+      "default": "#e2e2e2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "label": "Padding Top"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "label": "Padding Bottom"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "Milestone",
+      "settings": [
+        {
+          "type": "text",
+          "id": "navigation_label",
+          "label": "Timeline Date/Label",
+          "default": "2024"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Milestone Heading",
+          "default": "The beginning"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Add your premium content description here.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Premium Timeline Slider",
+      "blocks": [
+        { "type": "milestone", "settings": {"navigation_label": "EST. 2023", "heading": "Our Brand Roots"} },
+        { "type": "milestone", "settings": {"navigation_label": "NOV 2024", "heading": "Global Expansion"} }
+      ]
+    }
+  ]
+}
+{% endschema %}

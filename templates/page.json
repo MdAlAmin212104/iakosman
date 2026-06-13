@@ -1,0 +1,96 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "faq_accordion_8gwCDD": {
+      "type": "faq-accordion",
+      "blocks": {
+        "faq_LVpUGP": {
+          "type": "faq",
+          "settings": {
+            "faq_title": "What is DemoSpine used for?",
+            "faq_des": "<p>DemoSpine models are designed for <strong>medical education, procedural demonstration, and patient communication</strong>. They help clinicians clearly explain spinal anatomy, biomechanics, pathologies, and common spine procedures in a hands-on, visual way.</p>"
+          }
+        },
+        "faq_jQkzVx": {
+          "type": "faq",
+          "settings": {
+            "faq_title": "Who typically uses DemoSpine products?",
+            "faq_des": "<p>DemoSpine is used by <strong>spine surgeons, interventional pain specialists, anesthesiologists, orthopedic physicians, PM&R specialists, medical educators, and training institutions</strong>.</p>"
+          }
+        },
+        "faq_BiWPrk": {
+          "type": "faq",
+          "settings": {
+            "faq_title": "Are DemoSpine models anatomically accurate?",
+            "faq_des": "<p>Yes. All DemoSpine models are <strong>anatomically accurate and precision-engineered</strong>, developed with direct input from spine care professionals to reflect real clinical anatomy and movement.</p>"
+          }
+        },
+        "faq_46Axzc": {
+          "type": "faq",
+          "settings": {
+            "faq_title": "Can DemoSpine models be used for patient education?",
+            "faq_des": "<p>Absolutely. DemoSpine models are widely used during <strong>patient consultations</strong> to help individuals better understand their diagnosis, treatment options, and planned procedures.</p>"
+          }
+        },
+        "faq_UwD9kw": {
+          "type": "faq",
+          "settings": {
+            "faq_title": "How long does it take for orders to be shipped?",
+            "faq_des": "<p>Most orders are processed and shipped within <strong>2–5 business days</strong>, depending on product availability. Once shipped, you will receive a confirmation email with tracking details.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_LVpUGP",
+        "faq_jQkzVx",
+        "faq_BiWPrk",
+        "faq_46Axzc",
+        "faq_UwD9kw"
+      ],
+      "disabled": true,
+      "custom_css": [
+        ".faq-heading {letter-spacing: normal;}",
+        ".section-title-1 {font-weight: 700; letter-spacing: normal; font-size: 30px;}"
+      ],
+      "name": "Faqs Accordion",
+      "settings": {
+        "animation": "",
+        "setwidth": "container",
+        "bgsection": "#ffffff",
+        "e_size": "auto",
+        "e_repeat": "no-repeat",
+        "e_pos": "center center",
+        "title_top": "",
+        "title": "Frequently Asked Questions",
+        "des": "",
+        "align-heading": "center",
+        "title_size": "h5",
+        "e_first_open": false,
+        "e_reverse": false,
+        "e_small": false,
+        "left_html": "",
+        "e_right": false,
+        "paddingsection": "40px 0px 40px 0px",
+        "paddingmobile": "40px 0px 40px 0px",
+        "marginsection": "0px 0px 0px 0px",
+        "marginmobile": "0px 0px 0px 0px"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq_accordion_8gwCDD"
+  ]
+}

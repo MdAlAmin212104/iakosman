@@ -1,0 +1,180 @@
+{%- liquid
+  assign section_id = section.id
+-%}
+
+{% style %}
+  .contact-wrapper-{{ section_id }} {
+    --brand-color: {{ section.settings.accent_color }};
+    --bg-top: {{ section.settings.bg_gradient_top }};
+    --bg-bottom: {{ section.settings.bg_gradient_bottom }};
+    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .contact-container-{{ section_id }} { max-width: 1150px; margin: 0 auto; }
+  .contact-grid-{{ section_id }} { display: grid; grid-template-columns: 1.8fr 1fr; gap: 30px; align-items: start; }
+  .contact-form-card-{{ section_id }} { background: #ffffff; padding: 40px; border-radius: 24px; box-shadow: 0 15px 45px rgba(35, 89, 190, 0.06); }
+  .form-header-{{ section_id }} { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
+  .reply-badge-{{ section_id }} { background: #f0f4f9; padding: 8px 16px; border-radius: 50px; font-size: 40px; font-weight: 600; color: #444; }
+  .field-label-{{ section_id }} { display: block; font-weight: 800; font-size: 13px; margin-bottom: 8px; color: #1a1a1a; }
+  .form-input-{{ section_id }} { width: 100%; padding: 14px 18px; border: 1px solid #e1e8f0; border-radius: 14px; background: #f9fbfd; margin-bottom: 20px; transition: all 0.3s ease; font-size: 14px; box-sizing: border-box; }
+  .form-input-{{ section_id }}:focus { border-color: var(--brand-color); background: #fff; outline: none; box-shadow: 0 0 0 4px rgba(35, 89, 190, 0.05); }
+  .submit-btn-{{ section_id }} { width: 100%; background: var(--brand-color); color: #fff; padding: 18px; border: none; border-radius: 16px; font-weight: 800; font-size: 17px; cursor: pointer; transition: transform 0.2s, opacity 0.3s; box-shadow: 0 4px 15px rgba(35, 89, 190, 0.2); }
+  .sidebar-panel-{{ section_id }} { background: #ffffff; padding: 30px; border-radius: 24px; margin-bottom: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); }
+  .panel-label-{{ section_id }} { display: inline-block; background: #eef4ff; color: var(--brand-color); padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 25px; }
+  .info-row-{{ section_id }} { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
+  .icon-circle-{{ section_id }} { width: 40px; height: 40px; background: #f0f6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--brand-color); flex-shrink: 0; font-size: 18px; }
+
+  @media (max-width: 991px) {
+    .contact-grid-{{ section_id }} { grid-template-columns: 1fr; }
+    .contact-wrapper-{{ section_id }} { padding-top: 50px; padding-bottom: 50px; }
+  }
+{% endstyle %}
+
+<div class="contact-wrapper-{{ section_id }}">
+  <div class="contact-container-{{ section_id }}">
+    
+    <div class="text-center" style="margin-bottom: 60px;">
+      <h1 style="color: Black; font-weight: 900; font-size: 40px; margin: 0;">{{ section.settings.main_heading }}</h1>
+      <p style="color: #666; font-size: 1.15rem; margin-top: 15px;">{{ section.settings.main_subheading }}</p>
+    </div>
+
+    <div class="contact-grid-{{ section_id }}">
+      <div class="contact-form-card-{{ section_id }}">
+        <div class="form-header-{{ section_id }}">
+          <h2 style="margin:0; font-size: 1.3rem; font-weight: 900; color: var(--brand-color);">{{ section.settings.form_title }}</h2>
+          {% if section.settings.badge_text != blank %}
+            <span class="reply-badge-{{ section_id }}">{{ section.settings.badge_text }}</span>
+          {% endif %}
+        </div>
+
+        {%- form 'contact', id: 'ContactForm' -%}
+          {%- comment -%} CRITICAL: Success Message {%- endcomment -%}
+          {%- if form.posted_successfully? -%}
+            <div style="background: #e7f9ee; color: #1f7b44; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: bold;">
+              ✓ Sent successfully! We will contact you shortly.
+            </div>
+          {%- elsif form.errors -%}
+            <div style="background: #fff5f5; color: #c53030; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0 25px;">
+            <div>
+              <label class="field-label-{{ section_id }}" for="ContactForm-name">Name</label>
+              <input type="text" id="ContactForm-name" name="contact[name]" class="form-input-{{ section_id }}" placeholder="Enter your name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+            </div>
+            <div>
+              <label class="field-label-{{ section_id }}" for="ContactForm-phone">Contact Number</label>
+              <input type="tel" id="ContactForm-phone" name="contact[phone]" class="form-input-{{ section_id }}" placeholder="Enter your number" value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+            </div>
+          </div>
+          
+          <label class="field-label-{{ section_id }}" for="ContactForm-email">Email Address</label>
+          <input type="email" id="ContactForm-email" name="contact[email]" class="form-input-{{ section_id }}" placeholder="Enter your email address" required value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+
+          <label class="field-label-{{ section_id }}" for="ContactForm-body">Message</label>
+          <textarea id="ContactForm-body" name="contact[body]" rows="5" class="form-input-{{ section_id }}" placeholder="Write your message here">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+
+          <button type="submit" class="submit-btn-{{ section_id }}">{{ section.settings.button_text }}</button>
+        {%- endform -%}
+      </div>
+
+      <div class="contact-sidebar-{{ section_id }}">
+        {% for block in section.blocks %}
+          <div class="sidebar-panel-{{ section_id }}" {{ block.shopify_attributes }}>
+            {% if block.settings.title != blank %}
+              <span class="panel-label-{{ section_id }}">{{ block.settings.title }}</span>
+            {% endif %}
+
+            {% case block.type %}
+              {% when 'contact_details' %}
+                <div class="info-row-{{ section_id }}">
+                  <div class="icon-circle-{{ section_id }}">{{ block.settings.icon_1 }}</div>
+                  <div>
+                    <small style="color:#888; display:block; font-size: 11px;">{{ block.settings.label_1 }}</small>
+                    <div style="font-weight:800;">{{ block.settings.text_1 }}</div>
+                  </div>
+                </div>
+                <div class="info-row-{{ section_id }}">
+                  <div class="icon-circle-{{ section_id }}">{{ block.settings.icon_2 }}</div>
+                  <div>
+                    <small style="color:#888; display:block; font-size: 11px;">{{ block.settings.label_2 }}</small>
+                    <div style="font-weight:800;">{{ block.settings.text_2 }}</div>
+                  </div>
+                </div>
+
+              {% when 'benefit_list' %}
+                <div class="info-row-{{ section_id }}">
+                  <div class="icon-circle-{{ section_id }}">{{ block.settings.icon_1 }}</div>
+                  <div style="font-weight:700;">{{ block.settings.text_1 }}</div>
+                </div>
+                <div class="info-row-{{ section_id }}">
+                  <div class="icon-circle-{{ section_id }}">{{ block.settings.icon_2 }}</div>
+                  <div style="font-weight:700;">{{ block.settings.text_2 }}</div>
+                </div>
+                {% if block.settings.footer_text != blank %}
+                  <p style="font-size:12px; color:#777; border-top:1px solid #eee; padding-top:15px; margin-top:15px;">{{ block.settings.footer_text }}</p>
+                {% endif %}
+            {% endcase %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Professional Clinic Form",
+  "settings": [
+    { "type": "text", "id": "main_heading", "label": "Heading", "default": "Contact Us" },
+    { "type": "text", "id": "main_subheading", "label": "Subheading", "default": "Tell us what you're looking for." },
+    { "type": "color", "id": "accent_color", "label": "Accent Color", "default": "#2359be" },
+    { "type": "color", "id": "bg_gradient_top", "label": "Background Top", "default": "#f4f7ff" },
+    { "type": "color", "id": "bg_gradient_bottom", "label": "Background Bottom", "default": "#ffffff" },
+    { "type": "text", "id": "form_title", "label": "Form Title", "default": "REQUEST A CALL BACK" },
+    { "type": "text", "id": "badge_text", "label": "Badge Text", "default": "Typically replies in 1 day" },
+    { "type": "text", "id": "button_text", "label": "Button Label", "default": "Request a Call Back" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 150, "step": 10, "unit": "px", "label": "Padding Top", "default": 100 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 150, "step": 10, "unit": "px", "label": "Padding Bottom", "default": 100 }
+  ],
+  "blocks": [
+    {
+      "type": "contact_details",
+      "name": "Contact Details Panel",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Panel Label", "default": "Contact Details" },
+        { "type": "text", "id": "icon_1", "label": "Icon 1", "default": "📞" },
+        { "type": "text", "id": "label_1", "label": "Sublabel 1", "default": "Call us" },
+        { "type": "text", "id": "text_1", "label": "Text 1", "default": "+61 410 556 869" },
+        { "type": "text", "id": "icon_2", "label": "Icon 2", "default": "✉️" },
+        { "type": "text", "id": "label_2", "label": "Sublabel 2", "default": "Email" },
+        { "type": "text", "id": "text_2", "label": "Email Address", "default": "care@revivo.com.au" }
+      ]
+    },
+    {
+      "type": "benefit_list",
+      "name": "Benefits Panel",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Panel Label", "default": "What you can expect" },
+        { "type": "text", "id": "icon_1", "label": "Icon 1", "default": "🛡️" },
+        { "type": "text", "id": "text_1", "label": "Benefit 1", "default": "Secure & confidential" },
+        { "type": "text", "id": "icon_2", "label": "Icon 2", "default": "🩺" },
+        { "type": "text", "id": "text_2", "label": "Benefit 2", "default": "Clinician-led interpretation" },
+        { "type": "textarea", "id": "footer_text", "label": "Footer Note", "default": "Send us a note and we'll point you to the right next step." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Professional Clinic Form",
+      "blocks": [ { "type": "contact_details" }, { "type": "benefit_list" } ]
+    }
+  ]
+}
+{% endschema %}

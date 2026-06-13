@@ -1,0 +1,1254 @@
+{% doc %}
+  @prompt
+    Can you create a gallary section where if you click on it, it enlarges and shows you a small caption below it, need more images.. not just 9, I want to be able to on and off the images to reflect, when i hover the image then caption should be showing, in the text, background should be transparent and text should be start in the left side, actually not full transparent like text should be white and background should be black color shadow type, image should be fully showing, all good .just one more thing , each below image should be a short paragraph, make sure everything responsive for all device, all good , make sure padding margin should be here, all perfect .just one thing when i hover the image there are showing a text so i want text should be small , like i want option for desktop font size and mobile font size option
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-gallery-container-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px {{ block.settings.padding_horizontal }}px;
+    margin: {{ block.settings.margin_top }}px auto {{ block.settings.margin_bottom }}px auto;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-gallery-container-{{ ai_gen_id }} {
+      width: {{ block.settings.desktop_width_percent }}%;
+    }
+  }
+
+  .ai-gallery-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+    gap: {{ block.settings.grid_gap }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-gallery-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+    }
+  }
+
+  .ai-gallery-item-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-gallery-item-{{ ai_gen_id }} {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: {{ block.settings.border_radius }}px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-gallery-item-{{ ai_gen_id }}:hover {
+    transform: scale(1.02);
+  }
+
+  .ai-gallery-item-{{ ai_gen_id }}:hover .ai-gallery-hover-caption-{{ ai_gen_id }} {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .ai-gallery-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    aspect-ratio: 1 / 1;
+  }
+
+  .ai-gallery-hover-caption-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 50%, transparent 100%);
+    color: {{ block.settings.caption_color }};
+    padding: 40px 15px 15px 15px;
+    text-align: left;
+    font-size: {{ block.settings.caption_font_size_desktop }}px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    word-wrap: break-word;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-hover-caption-{{ ai_gen_id }} {
+      font-size: {{ block.settings.caption_font_size_mobile }}px;
+      padding: 30px 12px 12px 12px;
+    }
+  }
+
+  .ai-gallery-description-{{ ai_gen_id }} {
+    color: {{ block.settings.description_color }};
+    font-size: {{ block.settings.description_font_size }}px;
+    line-height: 1.6;
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-description-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.description_font_size }}px * 0.9);
+    }
+  }
+
+  .ai-gallery-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-gallery-placeholder-{{ ai_gen_id }} svg {
+    width: 50%;
+    height: 50%;
+    opacity: 0.3;
+  }
+
+  .ai-gallery-modal-{{ ai_gen_id }} {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-modal-{{ ai_gen_id }} {
+      padding: 10px;
+    }
+  }
+
+  .ai-gallery-modal-{{ ai_gen_id }}.active {
+    display: flex;
+  }
+
+  .ai-gallery-modal-content-{{ ai_gen_id }} {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-modal-content-{{ ai_gen_id }} {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+
+  .ai-gallery-modal-image-{{ ai_gen_id }} {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-modal-image-{{ ai_gen_id }} {
+      max-height: 50vh;
+    }
+  }
+
+  .ai-gallery-modal-caption-{{ ai_gen_id }} {
+    color: {{ block.settings.caption_color }};
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 50%, transparent 100%);
+    padding: 40px 20px 15px 20px;
+    margin-top: 15px;
+    border-radius: 4px;
+    text-align: left;
+    max-width: 600px;
+    width: 100%;
+    font-size: {{ block.settings.caption_font_size_desktop }}px;
+    align-self: flex-start;
+    word-wrap: break-word;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-modal-caption-{{ ai_gen_id }} {
+      font-size: {{ block.settings.caption_font_size_mobile }}px;
+      padding: 30px 15px 12px 15px;
+      margin-top: 10px;
+      max-width: 100%;
+    }
+  }
+
+  .ai-gallery-modal-description-{{ ai_gen_id }} {
+    color: {{ block.settings.description_color }};
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px 20px;
+    margin-top: 10px;
+    border-radius: 4px;
+    text-align: left;
+    max-width: 600px;
+    width: 100%;
+    font-size: {{ block.settings.description_font_size }}px;
+    line-height: 1.6;
+    align-self: flex-start;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-modal-description-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.description_font_size }}px * 0.9);
+      padding: 12px 15px;
+      margin-top: 8px;
+      max-width: 100%;
+    }
+  }
+
+  .ai-gallery-modal-close-{{ ai_gen_id }} {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 40px;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+  }
+
+  .ai-gallery-modal-close-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-modal-close-{{ ai_gen_id }} {
+      top: 10px;
+      right: 10px;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+    }
+  }
+
+  .ai-gallery-nav-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #ffffff;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 15px 20px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    z-index: 10;
+  }
+
+  .ai-gallery-nav-{{ ai_gen_id }}:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .ai-gallery-nav-prev-{{ ai_gen_id }} {
+    left: -60px;
+  }
+
+  .ai-gallery-nav-next-{{ ai_gen_id }} {
+    right: -60px;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .ai-gallery-nav-prev-{{ ai_gen_id }} {
+      left: 10px;
+    }
+
+    .ai-gallery-nav-next-{{ ai_gen_id }} {
+      right: 10px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-nav-{{ ai_gen_id }} {
+      font-size: 24px;
+      padding: 10px 15px;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .ai-gallery-nav-prev-{{ ai_gen_id }} {
+      left: 5px;
+    }
+
+    .ai-gallery-nav-next-{{ ai_gen_id }} {
+      right: 5px;
+    }
+  }
+
+  .ai-gallery-empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 16px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-gallery-empty-state-{{ ai_gen_id }} {
+      padding: 30px 15px;
+      font-size: 14px;
+    }
+  }
+{% endstyle %}
+
+<gallery-block-{{ ai_gen_id }} class="ai-gallery-container-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% assign has_images = false %}
+  {% for i in (1..20) %}
+    {% assign image_key = 'image_' | append: i %}
+    {% assign enabled_key = 'image_' | append: i | append: '_enabled' %}
+    {% if block.settings[enabled_key] and block.settings[image_key] %}
+      {% assign has_images = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {% if has_images %}
+    <div class="ai-gallery-grid-{{ ai_gen_id }}">
+      {% for i in (1..20) %}
+        {% assign image_key = 'image_' | append: i %}
+        {% assign caption_key = 'caption_' | append: i %}
+        {% assign description_key = 'description_' | append: i %}
+        {% assign enabled_key = 'image_' | append: i | append: '_enabled' %}
+        
+        {% if block.settings[enabled_key] %}
+          {% assign image = block.settings[image_key] %}
+          {% assign caption = block.settings[caption_key] %}
+          {% assign description = block.settings[description_key] %}
+          
+          <div class="ai-gallery-item-wrapper-{{ ai_gen_id }}">
+            <div class="ai-gallery-item-{{ ai_gen_id }}" data-index="{{ forloop.index0 }}">
+              {% if image %}
+                <img
+                  src="{{ image | image_url: width: 800 }}"
+                  alt="{{ image.alt | escape }}"
+                  class="ai-gallery-image-{{ ai_gen_id }}"
+                  loading="lazy"
+                  width="{{ image.width }}"
+                  height="{{ image.height }}"
+                >
+                {% if caption != blank %}
+                  <div class="ai-gallery-hover-caption-{{ ai_gen_id }}">
+                    {{ caption }}
+                  </div>
+                {% endif %}
+              {% else %}
+                <div class="ai-gallery-placeholder-{{ ai_gen_id }}">
+                  {{ 'image' | placeholder_svg_tag }}
+                </div>
+              {% endif %}
+            </div>
+            {% if description != blank %}
+              <div class="ai-gallery-description-{{ ai_gen_id }}">
+                {{ description }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="ai-gallery-modal-{{ ai_gen_id }}" role="dialog" aria-modal="true" aria-label="Gallery modal">
+      <div class="ai-gallery-modal-content-{{ ai_gen_id }}">
+        <button class="ai-gallery-modal-close-{{ ai_gen_id }}" aria-label="Close modal">&times;</button>
+        <button class="ai-gallery-nav-{{ ai_gen_id }} ai-gallery-nav-prev-{{ ai_gen_id }}" aria-label="Previous image">&#8249;</button>
+        <img src="" alt="" class="ai-gallery-modal-image-{{ ai_gen_id }}">
+        <button class="ai-gallery-nav-{{ ai_gen_id }} ai-gallery-nav-next-{{ ai_gen_id }}" aria-label="Next image">&#8250;</button>
+        <div class="ai-gallery-modal-caption-{{ ai_gen_id }}"></div>
+        <div class="ai-gallery-modal-description-{{ ai_gen_id }}"></div>
+      </div>
+    </div>
+  {% else %}
+    <div class="ai-gallery-empty-state-{{ ai_gen_id }}">
+      Add images to your gallery to get started
+    </div>
+  {% endif %}
+</gallery-block-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class GalleryBlock{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentIndex = 0;
+        this.images = [];
+      }
+
+      connectedCallback() {
+        this.modal = this.querySelector('.ai-gallery-modal-{{ ai_gen_id }}');
+        this.modalImage = this.querySelector('.ai-gallery-modal-image-{{ ai_gen_id }}');
+        this.modalCaption = this.querySelector('.ai-gallery-modal-caption-{{ ai_gen_id }}');
+        this.modalDescription = this.querySelector('.ai-gallery-modal-description-{{ ai_gen_id }}');
+        this.closeBtn = this.querySelector('.ai-gallery-modal-close-{{ ai_gen_id }}');
+        this.prevBtn = this.querySelector('.ai-gallery-nav-prev-{{ ai_gen_id }}');
+        this.nextBtn = this.querySelector('.ai-gallery-nav-next-{{ ai_gen_id }}');
+        this.items = this.querySelectorAll('.ai-gallery-item-{{ ai_gen_id }}');
+
+        this.collectImageData();
+        this.setupEventListeners();
+      }
+
+      collectImageData() {
+        this.items.forEach((item) => {
+          const img = item.querySelector('.ai-gallery-image-{{ ai_gen_id }}');
+          if (img) {
+            const index = parseInt(item.dataset.index);
+            this.images.push({
+              src: img.src,
+              alt: img.alt,
+              caption: this.getCaptionForIndex(index),
+              description: this.getDescriptionForIndex(index)
+            });
+          }
+        });
+      }
+
+      getCaptionForIndex(index) {
+        const captions = [
+          {% for i in (1..20) %}
+            {% assign enabled_key = 'image_' | append: i | append: '_enabled' %}
+            {% assign caption_key = 'caption_' | append: i %}
+            {% if block.settings[enabled_key] %}
+              {{ block.settings[caption_key] | json }}{% unless forloop.last %},{% endunless %}
+            {% endif %}
+          {% endfor %}
+        ];
+        return captions[index] || '';
+      }
+
+      getDescriptionForIndex(index) {
+        const descriptions = [
+          {% for i in (1..20) %}
+            {% assign enabled_key = 'image_' | append: i | append: '_enabled' %}
+            {% assign description_key = 'description_' | append: i %}
+            {% if block.settings[enabled_key] %}
+              {{ block.settings[description_key] | json }}{% unless forloop.last %},{% endunless %}
+            {% endif %}
+          {% endfor %}
+        ];
+        return descriptions[index] || '';
+      }
+
+      setupEventListeners() {
+        this.items.forEach((item, index) => {
+          item.addEventListener('click', () => {
+            this.openModal(index);
+          });
+        });
+
+        if (this.closeBtn) {
+          this.closeBtn.addEventListener('click', () => {
+            this.closeModal();
+          });
+        }
+
+        if (this.prevBtn) {
+          this.prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.showPrevImage();
+          });
+        }
+
+        if (this.nextBtn) {
+          this.nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.showNextImage();
+          });
+        }
+
+        if (this.modal) {
+          this.modal.addEventListener('click', (e) => {
+            if (e.target === this.modal) {
+              this.closeModal();
+            }
+          });
+        }
+
+        document.addEventListener('keydown', (e) => {
+          if (this.modal && this.modal.classList.contains('active')) {
+            if (e.key === 'Escape') {
+              this.closeModal();
+            } else if (e.key === 'ArrowLeft') {
+              this.showPrevImage();
+            } else if (e.key === 'ArrowRight') {
+              this.showNextImage();
+            }
+          }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        if (this.modal) {
+          this.modal.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+          }, false);
+
+          this.modal.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            this.handleSwipe();
+          }, false);
+        }
+
+        this.handleSwipe = () => {
+          if (touchEndX < touchStartX - 50) {
+            this.showNextImage();
+          }
+          if (touchEndX > touchStartX + 50) {
+            this.showPrevImage();
+          }
+        };
+      }
+
+      openModal(index) {
+        this.currentIndex = index;
+        this.updateModalContent();
+        this.modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      closeModal() {
+        this.modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      showPrevImage() {
+        this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+        this.updateModalContent();
+      }
+
+      showNextImage() {
+        this.currentIndex = (this.currentIndex + 1) % this.images.length;
+        this.updateModalContent();
+      }
+
+      updateModalContent() {
+        const currentImage = this.images[this.currentIndex];
+        if (currentImage) {
+          this.modalImage.src = currentImage.src;
+          this.modalImage.alt = currentImage.alt;
+          this.modalCaption.textContent = currentImage.caption;
+          this.modalDescription.textContent = currentImage.description;
+          
+          if (currentImage.caption) {
+            this.modalCaption.style.display = 'block';
+          } else {
+            this.modalCaption.style.display = 'none';
+          }
+
+          if (currentImage.description) {
+            this.modalDescription.style.display = 'block';
+          } else {
+            this.modalDescription.style.display = 'none';
+          }
+        }
+      }
+    }
+
+    customElements.define('gallery-block-{{ ai_gen_id }}', GalleryBlock{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Image gallery",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Gap between images",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Caption style"
+    },
+    {
+      "type": "range",
+      "id": "caption_font_size_desktop",
+      "label": "Font size on desktop",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "caption_font_size_mobile",
+      "label": "Font size on mobile",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "caption_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Description style"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Image 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_1_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_1",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_1",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_2_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_2",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_2",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_3_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_3",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_3",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_4_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_4",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_4",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_5_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_5",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_5",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_5",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 6"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_6_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_6",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_6",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_6",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 7"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_7_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_7",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_7",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_7",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 8"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_8_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_8",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_8",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_8",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 9"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_9_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_9",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_9",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_9",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 10"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_10_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_10",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_10",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_10",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 11"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_11_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_11",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_11",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_11",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 12"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_12_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_12",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_12",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_12",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 13"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_13_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image_13",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_13",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_13",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 14"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_14_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image_14",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_14",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_14",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 15"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_15_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image_15",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_15",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_15",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 16"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_16_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image_16",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_16",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_16",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 17"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_17_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image_17",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_17",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_17",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 18"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_18_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image_18",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_18",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_18",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 19"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_19_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image_19",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_19",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_19",
+      "label": "Description"
+    },
+    {
+      "type": "header",
+      "content": "Image 20"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_20_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "image_20",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "caption_20",
+      "label": "Caption"
+    },
+    {
+      "type": "textarea",
+      "id": "description_20",
+      "label": "Description"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image gallery"
+    }
+  ]
+}
+{% endschema %}

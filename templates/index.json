@@ -1,0 +1,236 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "featured_products_nfeLdQ": {
+      "type": "featured-products",
+      "custom_css": [
+        ".section-title-1 {font-weight: 900 !important; font-size: 30px; letter-spacing: normal;}"
+      ],
+      "name": "Product Grid",
+      "settings": {
+        "animation": "",
+        "setwidth": "container",
+        "bgsection": "#ffffff",
+        "title_top": "",
+        "title": "Physician-designed and USA-made",
+        "des": "",
+        "align-heading": "left",
+        "collection": "models",
+        "enable_creative": false,
+        "padding": true,
+        "colgrid": "col-lg-3",
+        "rows": 4,
+        "txtbutton": "",
+        "urlbtn": "",
+        "paddingsection": "40px 0px 40px 0px",
+        "paddingmobile": "30px 0px 40px 0px",
+        "marginsection": "0px 0px 0px 0px",
+        "marginmobile": "0px 0px 0px 0px"
+      }
+    },
+    "featured_products_D7nDpB": {
+      "type": "featured-products",
+      "custom_css": [
+        ".section-title-1 {font-weight: 900 !important; font-size: 30px; letter-spacing: normal;}"
+      ],
+      "name": "Product Grid",
+      "settings": {
+        "animation": "",
+        "setwidth": "container",
+        "bgsection": "#ffffff",
+        "title_top": "",
+        "title": "Accessories",
+        "des": "",
+        "align-heading": "center",
+        "collection": "accessories",
+        "enable_creative": false,
+        "padding": true,
+        "colgrid": "col-lg-4",
+        "rows": 6,
+        "txtbutton": "",
+        "urlbtn": "",
+        "paddingsection": "50px 0px 40px 0px",
+        "paddingmobile": "30px 0px 40px 0px",
+        "marginsection": "0px 0px 0px 0px",
+        "marginmobile": "0px 0px 0px 0px"
+      }
+    },
+    "image_content_4K4EjJ": {
+      "type": "image-content",
+      "blocks": {
+        "text_block_3PrmWg": {
+          "type": "text_block",
+          "settings": {
+            "width": "100%",
+            "bgtext": "#ffffff",
+            "title_color": "rgba(0,0,0,0)",
+            "subtitle": "",
+            "title": "Why Choose DemoSpine?",
+            "size_text": "h3",
+            "text": "",
+            "answer_content": "<ul><li><strong>Medical Accuracy:</strong> We design our models with input from surgeons and interventionalists and reflect the accurate position, approach, and extent of procedures.</li></ul><p>​</p><ul><li><strong>By Doctors For Doctors:</strong> We continuously develop models based on physicians' clinical and educational needs. Contact us for customized models and to become involved in the design process.</li></ul><p>​</p><ul><li><strong>Procedure-Specific Models: </strong>We help summarise the most commonly performed procedures in one model to provide patient education and resident training.</li></ul>",
+            "style_btn": "btn-underline btn-underline-white",
+            "button": "",
+            "link": "",
+            "enable_padding": true,
+            "align": "left"
+          }
+        },
+        "image_block_JRc7Kh": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/9f578c_83ba0c1bf43e49a9a5a969737e300bf7_mv2.gif",
+            "image_first_mobile": true
+          }
+        }
+      },
+      "block_order": [
+        "text_block_3PrmWg",
+        "image_block_JRc7Kh"
+      ],
+      "custom_css": [
+        ".image-content__image {border-radius: 20px;}",
+        ".mb-3 {font-weight: 800 !important;}",
+        ".col-12 > ul > li {font-size: 16px !important;}"
+      ],
+      "name": "Image with text",
+      "settings": {
+        "animation": "",
+        "setwidth": "container-fluid",
+        "bgsection": "#ffffff",
+        "rangebg": 0,
+        "bgbefore": "rgba(0,0,0,0)",
+        "bg_pos": "left",
+        "enable_padding": true,
+        "align_center": true,
+        "paddingsection": "40px 0px 40px 0px",
+        "paddingmobile": "10px 0px 10px 0px",
+        "marginsection": "0px 0px 0px 0px",
+        "marginmobile": "0px 0px 0px 0px"
+      }
+    },
+    "image_content_Dijq9y": {
+      "type": "image-content",
+      "blocks": {
+        "image_block_Tj3xLf": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/DSC_9921_cropped.jpg",
+            "image_first_mobile": true
+          }
+        },
+        "text_block_xYGymF": {
+          "type": "text_block",
+          "settings": {
+            "width": "100%",
+            "bgtext": "#ffffff",
+            "title_color": "rgba(0,0,0,0)",
+            "subtitle": "",
+            "title": "Removable Resections",
+            "size_text": "h4",
+            "text": "",
+            "answer_content": "<ul><li><strong>Demonstrate</strong> standard lumbar spine procedures with removable pieces </li><li><strong>Visualize</strong> anatomic changes in vertebra before and after the procedure </li><li><strong>Describe</strong> in 3-dimensions the requisite cuts and bites of bone</li></ul>",
+            "style_btn": "btn-underline btn-underline-white",
+            "button": "",
+            "link": "",
+            "enable_padding": true,
+            "align": "left"
+          }
+        }
+      },
+      "block_order": [
+        "image_block_Tj3xLf",
+        "text_block_xYGymF"
+      ],
+      "custom_css": [
+        ".image-content__image {border-radius: 20px;}",
+        ".mb-3 {font-weight: 800 !important;}",
+        ".col-12 > ul > li {font-size: 16px !important;}"
+      ],
+      "name": "Image with text",
+      "settings": {
+        "animation": "",
+        "setwidth": "container",
+        "bgsection": "#ffffff",
+        "rangebg": 0,
+        "bgbefore": "rgba(0,0,0,0)",
+        "bg_pos": "left",
+        "enable_padding": true,
+        "align_center": true,
+        "paddingsection": "40px 0px 40px 0px",
+        "paddingmobile": "0px 0px 0px 0px",
+        "marginsection": "0px 0px 0px 0px",
+        "marginmobile": "0px 0px 0px 0px"
+      }
+    },
+    "image_content_eXBmzG": {
+      "type": "image-content",
+      "blocks": {
+        "text_block_EPrfeW": {
+          "type": "text_block",
+          "settings": {
+            "width": "100%",
+            "bgtext": "#ffffff",
+            "title_color": "rgba(0,0,0,0)",
+            "subtitle": "",
+            "title": "Detachable vertebra",
+            "size_text": "h4",
+            "text": "",
+            "answer_content": "<ul><li><strong>Examine</strong> vertebra independently, and inspect<strong> </strong>from different angles​</li><li><strong>Isolate</strong> intervertebral sections to describe procedures​<strong>​</strong></li><li>Easy <strong>handling</strong> when teaching</li></ul>",
+            "style_btn": "btn-underline btn-underline-white",
+            "button": "",
+            "link": "",
+            "enable_padding": true,
+            "align": "left"
+          }
+        },
+        "image_block_MByGHq": {
+          "type": "image_block",
+          "settings": {
+            "image": "shopify://shop_images/DSC_9924.jpg",
+            "image_first_mobile": true
+          }
+        }
+      },
+      "block_order": [
+        "text_block_EPrfeW",
+        "image_block_MByGHq"
+      ],
+      "custom_css": [
+        ".image-content__image {border-radius: 20px;}",
+        ".mb-3 {font-weight: 800 !important;}",
+        ".col-12 > ul > li {font-size: 16px !important;}"
+      ],
+      "name": "Image with text",
+      "settings": {
+        "animation": "",
+        "setwidth": "container-fluid",
+        "bgsection": "#ffffff",
+        "rangebg": 0,
+        "bgbefore": "rgba(0,0,0,0)",
+        "bg_pos": "left",
+        "enable_padding": true,
+        "align_center": true,
+        "paddingsection": "40px 0px 40px 0px",
+        "paddingmobile": "0px 0px 0px 0px",
+        "marginsection": "0px 0px 0px 0px",
+        "marginmobile": "0px 0px 0px 0px"
+      }
+    }
+  },
+  "order": [
+    "featured_products_nfeLdQ",
+    "featured_products_D7nDpB",
+    "image_content_4K4EjJ",
+    "image_content_Dijq9y",
+    "image_content_eXBmzG"
+  ]
+}
