@@ -138,17 +138,18 @@
 
 
 <style>
-.site-nav__link:hover,
-.site-nav__item.site-nav--active .site-nav__link {
-  color: white;
-  font-weight: 600;
-  background: #1e88c9;
-  border-radius: 5px;
-  display: inline-block;
+.site-nav__link.site-nav--active {
+  color: FFF!important;
+  background: #1e88c9!important;
+  border-radius: 5px!important;
 }
 .site-nav__link {
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out!important;
 }
+  a.site-nav__link.site-nav--active {
+    color: white!important;
+    border: none!important;
+  }
 </style>
 
 
@@ -180,7 +181,7 @@
     </div>
 
     <!-- Desktop Menu -->
-    <div class="d-none d-lg-flex col-menu">
+    <div class="d-none d-lg-flex col-menu gap-1">
       {%- if layout_header == 'logo-center-navigation-left' and enable_menu_vertical and sl_menu_vertical == 'hover-menu' -%}
         <nav class="nav-bar d-none d-lg-block" role="navigation">
           <ul class="site-nav">
@@ -262,8 +263,11 @@
               </li>
 
             {%- else -%}
-              <li class="site-nav__item{% if link.active %} site-nav--active{% endif %}">
-                <a href="{{ link.url }}" class="site-nav__link"{% if link.active %} aria-current="page"{% endif %}>
+              {%- assign current_path = request.path -%}
+              {%- assign link_path = link.url | remove: shop.url -%}
+
+              <li class="site-nav__item ">
+                <a href="{{ link.url }}" class="site-nav__link {% if current_path == link_path %}site-nav--active{% endif %}"{% if link.active %} aria-current="page"{% endif %}>
                   <span class="site-nav__title">{%- render 'processMenuTitle' , itemName: link.title -%}</span>
                   {%- render 'processMenuLabel' , itemName: link.title -%}
                 </a>
